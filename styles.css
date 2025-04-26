@@ -16,6 +16,7 @@ body {
     width: 100%;
     padding: 20px;
     background: #f4f4f4;
+    position: relative;
 }
 
 h1 {
@@ -26,14 +27,57 @@ h1 {
     margin-right: auto;
 }
 
+.settings-container {
+    max-width: 800px;
+    margin: 0 auto 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.toggle-settings-btn {
+    width: 100%;
+    padding: 12px 15px;
+    background-color: #f0f0f0;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    border-radius: 0;
+    text-align: left;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.toggle-settings-btn:hover {
+    background-color: #e5e5e5;
+}
+
+.arrow {
+    transition: transform 0.3s ease;
+}
+
+.arrow.collapsed {
+    transform: rotate(-90deg);
+}
+
 .controls {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    margin-bottom: 20px;
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
+    padding: 15px;
+    background-color: #f9f9f9;
+    max-height: 500px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+}
+
+.controls.collapsed {
+    max-height: 0;
+    padding: 0 15px;
+    border-top: none;
 }
 
 .control-group {
@@ -95,9 +139,24 @@ button {
     color: white;
 }
 
-#fullscreen-btn {
-    background-color: #673AB7;
-    color: white;
+.fullscreen-icon {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: #673AB7;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 5px;
+    opacity: 0.6;
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 100;
+}
+
+.fullscreen-icon:hover {
+    opacity: 1;
+    transform: scale(1.1);
 }
 
 button:hover {
@@ -224,12 +283,13 @@ button:disabled {
     transform: translateY(-50%);
 }
 
+/* Basic animation keyframes - will be adjusted dynamically in JS for different circle sizes */
 @keyframes bounce {
-    0% { left: calc(50% - 25px); }
-    25% { left: calc(100% - 50px); }
-    50% { left: calc(50% - 25px); }
+    0% { left: calc(50% - var(--circle-radius, 25px)); }
+    25% { left: calc(100% - var(--circle-size, 50px)); }
+    50% { left: calc(50% - var(--circle-radius, 25px)); }
     75% { left: 0; }
-    100% { left: calc(50% - 25px); }
+    100% { left: calc(50% - var(--circle-radius, 25px)); }
 }
 
 /* Fullscreen Minimalist Mode */
@@ -249,8 +309,13 @@ button:disabled {
     width: 100vw;
 }
 
+.fullscreen-mode .fullscreen-icon {
+    color: white;
+    opacity: 0.4;
+}
+
 .fullscreen-mode h1,
-.fullscreen-mode .controls,
+.fullscreen-mode .settings-container,
 .fullscreen-mode .status,
 .fullscreen-mode .footer {
     display: none;
@@ -263,8 +328,8 @@ button:disabled {
 }
 
 .fullscreen-mode #circle {
-    width: 80px;
-    height: 80px;
+    /* Circle size will be controlled by the custom controls, even in fullscreen mode */
+    /* Default size increased by 50% is handled by JavaScript */
 }
 
 .fullscreen-mode .button-container {

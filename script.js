@@ -9,11 +9,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const roundsInput = document.getElementById('rounds');
     const speedInput = document.getElementById('speed');
     const soundSelect = document.getElementById('sound');
+    const circleSizeInput = document.getElementById('circle-size');
+    const circleColorInput = document.getElementById('circle-color');
     const roundDisplay = document.getElementById('round-display');
     const timeDisplay = document.getElementById('time-display');
     const animationContainer = document.querySelector('.animation-container');
     const disclaimerModal = document.getElementById('disclaimer-modal');
     const acceptDisclaimerBtn = document.getElementById('accept-disclaimer');
+    const toggleSettingsBtn = document.getElementById('toggle-settings');
+    const settingsPanel = document.getElementById('settings-panel');
+    const settingsArrow = toggleSettingsBtn.querySelector('.arrow');
     
     // Check if user has already accepted the disclaimer
     const hasAcceptedDisclaimer = localStorage.getItem('emdrDisclaimerAccepted');
@@ -71,12 +76,32 @@ document.addEventListener('DOMContentLoaded', function() {
         
         updateDisplay();
         updatePauseButton();
+        updateCircleAppearance();
         
         // Reset animation and position to center
         circle.style.animation = 'none';
         circle.offsetHeight; // Force reflow
-        circle.style.left = 'calc(50% - 25px)';
+        
+        // Update position based on current circle size
+        const circleSize = parseInt(circleSizeInput.value);
+        circle.style.left = `calc(50% - ${circleSize/2}px)`;
         lastPosition = 'center';
+    }
+    
+    // Update circle size and color
+    function updateCircleAppearance() {
+        const size = circleSizeInput.value;
+        const color = circleColorInput.value;
+        const radius = size / 2;
+        
+        // Update CSS variables for the animation
+        document.documentElement.style.setProperty('--circle-size', `${size}px`);
+        document.documentElement.style.setProperty('--circle-radius', `${radius}px`);
+        
+        // Update circle appearance
+        circle.style.width = `${size}px`;
+        circle.style.height = `${size}px`;
+        circle.style.backgroundColor = color;
     }
     
     // Update display elements
@@ -106,7 +131,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // Start the animation
     function startAnimation() {
         const duration = calculateAnimationDuration();
-        circle.style.animation = `bounce ${duration}s linear infinite`;
+        
+        // Create dynamic keyframes that adjust based on circle size
+        const circleSize = parseInt(circleSizeInput.value);
+        const halfSize = circleSize / 2;
+        
+        // Reset any existing animation
+        circle.style.animation = 'none';
+        circle.offsetHeight; // Force reflow
+        
+        // Create a dynamic animation with proper circle positioning
+        circle.style.animationName = 'bounce';
+        circle.style.animationDuration = `${duration}s`;
+        circle.style.animationTimingFunction = 'linear';
+        circle.style.animationIterationCount = 'infinite';
+        
+        // Set initial position to center
+        circle.style.left = `calc(50% - ${halfSize}px)`;
         
         // Set up animation event listeners instead of interval
         if (animationInterval) {
@@ -274,9 +315,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Set circle position to center
     function centerCircle() {
+        const circleSize = parseInt(circleSizeInput.value);
+        const halfSize = circleSize / 2;
+        
         circle.style.animation = 'none';
         circle.offsetHeight; // Force reflow
-        circle.style.left = 'calc(50% - 25px)';
+        circle.style.left = `calc(50% - ${halfSize}px)`;
         lastPosition = 'center';
     }
     
@@ -304,6 +348,8 @@ document.addEventListener('DOMContentLoaded', function() {
             durationInput.disabled = true;
             roundsInput.disabled = true;
             speedInput.disabled = true;
+            circleSizeInput.disabled = true;
+            circleColorInput.disabled = true;
             
             updateDisplay();
             updatePauseButton();
@@ -422,6 +468,8 @@ document.addEventListener('DOMContentLoaded', function() {
         durationInput.disabled = false;
         roundsInput.disabled = false;
         speedInput.disabled = false;
+        circleSizeInput.disabled = false;
+        circleColorInput.disabled = false;
         updatePauseButton();
     }
     
@@ -437,14 +485,32 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Toggle fullscreen mode
         if (!document.fullscreenElement) {
+            // Save current circle size before entering fullscreen
+            const currentSize = parseInt(circleSizeInput.value);
+            
             // Enter fullscreen
             if (body.requestFullscreen) {
                 body.requestFullscreen().catch(err => {
                     console.log(`Error attempting to enable fullscreen mode: ${err.message}`);
                 });
             }
+            
+            // Apply fullscreen mode
             body.classList.add('fullscreen-mode');
-            fullscreenBtn.textContent = 'Exit Fullscreen';
+            fullscreenBtn.textContent = '⛶';            
+            
+            // Increase circle size by 50% when in fullscreen mode if not running
+            // If animation is running, we'll keep the current size to avoid disruption
+            if (!isRunning) {
+                // Store original size as a data attribute
+                circle.dataset.originalSize = currentSize;
+                
+                // Apply larger size for fullscreen
+                const fullscreenSize = Math.min(Math.floor(currentSize * 1.5), 150);
+                circleSizeInput.value = fullscreenSize;
+                updateCircleAppearance();
+                centerCircle();
+            }
         } else {
             // Exit fullscreen
             if (document.exitFullscreen) {
@@ -452,8 +518,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.log(`Error attempting to exit fullscreen mode: ${err.message}`);
                 });
             }
+            
+            // Remove fullscreen mode class
             body.classList.remove('fullscreen-mode');
-            fullscreenBtn.textContent = 'Fullscreen';
+            fullscreenBtn.textContent = '⛶';
+            
+            // Restore original circle size if not running
+            if (!isRunning && circle.dataset.originalSize) {
+                circleSizeInput.value = circle.dataset.originalSize;
+                updateCircleAppearance();
+                centerCircle();
+                delete circle.dataset.originalSize;
+            }
         }
     }
     
@@ -461,15 +537,59 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('fullscreenchange', function() {
         if (!document.fullscreenElement) {
             document.body.classList.remove('fullscreen-mode');
-            fullscreenBtn.textContent = 'Fullscreen';
+            fullscreenBtn.textContent = '⛶';
+            
+            // Restore original circle size if not running
+            if (!isRunning && circle.dataset.originalSize) {
+                circleSizeInput.value = circle.dataset.originalSize;
+                updateCircleAppearance();
+                centerCircle();
+                delete circle.dataset.originalSize;
+            }
         }
     });
+    
+    // Toggle settings panel
+    function toggleSettings() {
+        const isExpanded = toggleSettingsBtn.getAttribute('aria-expanded') === 'true';
+        
+        // Update button state
+        toggleSettingsBtn.setAttribute('aria-expanded', isExpanded ? 'false' : 'true');
+        
+        // Toggle classes for animation
+        settingsPanel.classList.toggle('collapsed', isExpanded);
+        settingsArrow.classList.toggle('collapsed', isExpanded);
+        
+        // Save settings state in localStorage
+        localStorage.setItem('emdrSettingsExpanded', isExpanded ? 'false' : 'true');
+    }
+    
+    // Check if settings should be collapsed on load
+    const settingsExpanded = localStorage.getItem('emdrSettingsExpanded');
+    if (settingsExpanded === 'false') {
+        toggleSettingsBtn.setAttribute('aria-expanded', 'false');
+        settingsPanel.classList.add('collapsed');
+        settingsArrow.classList.add('collapsed');
+    }
     
     // Event listeners
     startBtn.addEventListener('click', startSession);
     pauseBtn.addEventListener('click', toggleSession);
     resetBtn.addEventListener('click', resetSession);
     fullscreenBtn.addEventListener('click', toggleFullscreenMode);
+    toggleSettingsBtn.addEventListener('click', toggleSettings);
+    
+    // Circle appearance controls
+    circleSizeInput.addEventListener('input', function() {
+        updateCircleAppearance();
+        // If the animation is paused, update the circle position immediately
+        if (!isRunning && circle.style.animation === 'none') {
+            const circleSize = parseInt(circleSizeInput.value);
+            circle.style.left = `calc(50% - ${circleSize/2}px)`;
+        }
+    });
+    
+    circleColorInput.addEventListener('input', updateCircleAppearance);
     
     // When speed changes, update the animation if running
     speedInput.addEventListener('change', function() {

@@ -42,47 +42,64 @@
     </div>
 
     <div class="container">
+        <button id="fullscreen-btn" class="fullscreen-icon" aria-label="Toggle fullscreen">⛶</button>
         <h1>EMDR Bilateral Stimulation</h1>
 
         <div class="animation-container">
             <div id="circle"></div>
         </div>
 
+
         <div class="button-container">
             <button id="start-btn">Start</button>
             <button id="pause-btn" disabled>Pause</button>
             <button id="reset-btn">Reset</button>
-            <button id="fullscreen-btn">Fullscreen</button>
         </div>
-        
-        
-        <div class="controls">
-            <div class="control-group">
-                <label for="duration">Duration (seconds):</label>
-                <input type="number" id="duration" min="1" max="300" value="30">
-            </div>
-            
-            <div class="control-group">
-                <label for="rounds">Number of Rounds:</label>
-                <input type="number" id="rounds" min="1" max="20" value="3">
-            </div>
-            
-            <div class="control-group">
-                <label for="speed">Speed:</label>
-                <input type="range" id="speed" min="1" max="10" value="5">
-            </div>
-            
-            <div class="control-group">
-                <label for="sound">Sound:</label>
-                <select id="sound"></select>
-            </div>
-        </div>
-        
 
         <div class="status">
             <span id="round-display">Round: 0 / 0</span>
             <span id="time-display">Time: 0s</span>
         </div>
+        
+        <div class="settings-container">
+            <button id="toggle-settings" class="toggle-settings-btn" aria-expanded="true" aria-controls="settings-panel">
+                <span>Settings</span>
+                <span class="arrow">▼</span>
+            </button>
+            
+            <div id="settings-panel" class="controls">
+                <div class="control-group">
+                    <label for="duration">Duration (seconds):</label>
+                    <input type="number" id="duration" min="1" max="300" value="30">
+                </div>
+                
+                <div class="control-group">
+                    <label for="rounds">Number of Rounds:</label>
+                    <input type="number" id="rounds" min="1" max="20" value="3">
+                </div>
+                
+                <div class="control-group">
+                    <label for="speed">Speed:</label>
+                    <input type="range" id="speed" min="1" max="10" value="5">
+                </div>
+                
+                <div class="control-group">
+                    <label for="sound">Sound:</label>
+                    <select id="sound"></select>
+                </div>
+                
+                <div class="control-group">
+                    <label for="circle-size">Circle Size:</label>
+                    <input type="range" id="circle-size" min="30" max="150" value="50">
+                </div>
+                
+                <div class="control-group">
+                    <label for="circle-color">Circle Color:</label>
+                    <input type="color" id="circle-color" value="#4CAF50">
+                </div>
+            </div>
+        </div>
+        
 
         <div class="footer">
             <p><small>DISCLAIMER: For educational purposes only. Not medical treatment. Use at your own risk. No warranties or liability accepted.</small></p>
