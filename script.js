@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const startBtn = document.getElementById('start-btn');
     const pauseBtn = document.getElementById('pause-btn');
     const resetBtn = document.getElementById('reset-btn');
+    const fullscreenBtn = document.getElementById('fullscreen-btn');
     const durationInput = document.getElementById('duration');
     const roundsInput = document.getElementById('rounds');
     const speedInput = document.getElementById('speed');
@@ -418,10 +419,45 @@ document.addEventListener('DOMContentLoaded', function() {
         init();
     }
     
+    // Toggle fullscreen minimalist mode
+    function toggleFullscreenMode() {
+        const body = document.body;
+        
+        // Toggle fullscreen mode
+        if (!document.fullscreenElement) {
+            // Enter fullscreen
+            if (body.requestFullscreen) {
+                body.requestFullscreen().catch(err => {
+                    console.log(`Error attempting to enable fullscreen mode: ${err.message}`);
+                });
+            }
+            body.classList.add('fullscreen-mode');
+            fullscreenBtn.textContent = 'Exit Fullscreen';
+        } else {
+            // Exit fullscreen
+            if (document.exitFullscreen) {
+                document.exitFullscreen().catch(err => {
+                    console.log(`Error attempting to exit fullscreen mode: ${err.message}`);
+                });
+            }
+            body.classList.remove('fullscreen-mode');
+            fullscreenBtn.textContent = 'Fullscreen';
+        }
+    }
+    
+    // Handle fullscreen change event (when user exits fullscreen via Escape key)
+    document.addEventListener('fullscreenchange', function() {
+        if (!document.fullscreenElement) {
+            document.body.classList.remove('fullscreen-mode');
+            fullscreenBtn.textContent = 'Fullscreen';
+        }
+    });
+    
     // Event listeners
     startBtn.addEventListener('click', startSession);
     pauseBtn.addEventListener('click', toggleSession);
     resetBtn.addEventListener('click', resetSession);
+    fullscreenBtn.addEventListener('click', toggleFullscreenMode);
     
     // When speed changes, update the animation if running
     speedInput.addEventListener('change', function() {

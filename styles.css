@@ -95,6 +95,11 @@ button {
     color: white;
 }
 
+#fullscreen-btn {
+    background-color: #673AB7;
+    color: white;
+}
+
 button:hover {
     opacity: 0.9;
 }
@@ -225,4 +230,49 @@ button:disabled {
     50% { left: calc(50% - 25px); }
     75% { left: 0; }
     100% { left: calc(50% - 25px); }
+}
+
+/* Fullscreen Minimalist Mode */
+.fullscreen-mode {
+    background-color: black;
+}
+
+.fullscreen-mode .container {
+    background: black;
+    color: white;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+}
+
+.fullscreen-mode h1,
+.fullscreen-mode .controls,
+.fullscreen-mode .status,
+.fullscreen-mode .footer {
+    display: none;
+}
+
+.fullscreen-mode .animation-container {
+    height: 80vh;
+    background-color: black;
+    margin-bottom: 10px;
+}
+
+.fullscreen-mode #circle {
+    width: 80px;
+    height: 80px;
+}
+
+.fullscreen-mode .button-container {
+    margin-bottom: 0;
+    position: fixed;
+    bottom: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 8px;
+    z-index: 100;
 }
