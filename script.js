@@ -55,6 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let animationDuration = 0;
     let timer;
     let animationInterval;
+    let soundTimers = []; // Add array to track sound timers
     let lastPosition = 'left';
     
     // Load available sounds
@@ -136,11 +137,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         function scheduleSound(position, delay) {
-            setTimeout(() => {
+            const timer = setTimeout(() => {
                 if (!isRunning) return;
                 playSound(position); // Pass position to control stereo panning
                 lastPosition = position;
+                // Remove this timer from the array once it's executed
+                const index = soundTimers.indexOf(timer);
+                if (index !== -1) soundTimers.splice(index, 1);
             }, delay);
+            soundTimers.push(timer); // Track this timer
         }
     }
     
@@ -352,14 +357,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 1000);
     }
     
+    // Helper function to clear all timers
+    function clearAllTimers() {
+        if (timer) clearInterval(timer);
+        if (animationInterval) clearTimeout(animationInterval);
+        
+        // Clear all sound timers
+        soundTimers.forEach(timerID => clearTimeout(timerID));
+        soundTimers = [];
+    }
+    
     // Pause for next round
     function pauseForNextRound() {
         isRunning = false;
         isRoundComplete = true;
         
-        // Clear timers
-        clearInterval(timer);
-        clearTimeout(animationInterval);
+        // Clear all timers
+        clearAllTimers();
         
         // Center the circle
         centerCircle();
@@ -380,9 +394,8 @@ document.addEventListener('DOMContentLoaded', function() {
         isRunning = false;
         isPaused = true;
         
-        // Clear timers
-        clearInterval(timer);
-        clearTimeout(animationInterval);
+        // Clear all timers
+        clearAllTimers();
         
         // Center the circle
         centerCircle();
@@ -397,9 +410,8 @@ document.addEventListener('DOMContentLoaded', function() {
         isPaused = false;
         isRoundComplete = false;
         
-        // Clear timers
-        clearInterval(timer);
-        clearTimeout(animationInterval);
+        // Clear all timers
+        clearAllTimers();
         
         // Center the circle
         centerCircle();
