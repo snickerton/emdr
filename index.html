@@ -7,6 +7,40 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Disclaimer Modal -->
+    <div id="disclaimer-modal" class="modal">
+        <div class="modal-content">
+            <div class="scroll-indicator">Scroll to fully read and accept</div>
+            <h2>IMPORTANT DISCLAIMER</h2>
+            <div class="disclaimer-text">
+                <p><strong>PLEASE READ THIS AGREEMENT CAREFULLY BEFORE USING THIS WEBSITE.</strong></p>
+                
+                <p>By accessing or using this EMDR Bilateral Stimulation tool, you acknowledge that you have read, understood, and agree to be bound by the following terms:</p>
+                
+                <ol>
+                    <li><strong>Professional Supervision Required:</strong> Eye Movement Desensitization and Reprocessing (EMDR) therapy should only be conducted under the supervision of a qualified and licensed mental health professional who is trained in EMDR techniques. This website is NOT a substitute for professional therapy.</li>
+                    
+                    <li><strong>No Therapeutic Relationship:</strong> Use of this website does not establish any kind of therapeutic relationship between you and the website creator or operators.</li>
+                    
+                    <li><strong>No Medical Advice:</strong> The content and tools provided on this website do not constitute medical advice, diagnosis, or treatment.</li>
+                    
+                    <li><strong>Assumption of Risk:</strong> You understand and acknowledge that using bilateral stimulation without proper professional guidance may cause discomfort, distress, or other adverse psychological effects in some individuals.</li>
+                    
+                    <li><strong>Disclaimer of Warranties:</strong> This website and its tools are provided "as is" without any warranties of any kind, either express or implied.</li>
+                    
+                    <li><strong>Limitation of Liability:</strong> Under no circumstances shall the website creator, developer, or any affiliated parties be liable for any direct, indirect, incidental, special, or consequential damages arising out of or in any way connected with the use of this website.</li>
+                    
+                    <li><strong>User Responsibility:</strong> You assume full responsibility for your use of this website and any consequences thereof.</li>
+                    
+                    <li><strong>Indemnification:</strong> You agree to indemnify and hold harmless the website creator from any claims, damages, or expenses arising from your use of this website.</li>
+                </ol>
+                
+                <p>By clicking "I Understand and Agree" below, you confirm that you have read, understood, and agree to the terms outlined above, and that you will only use this tool under appropriate professional supervision.</p>
+            </div>
+            <button id="accept-disclaimer">I Understand and Agree</button>
+        </div>
+    </div>
+
     <div class="container">
         <h1>EMDR Bilateral Stimulation</h1>
 
@@ -29,6 +63,11 @@
                 <label for="speed">Speed:</label>
                 <input type="range" id="speed" min="1" max="10" value="5">
             </div>
+            
+            <div class="control-group">
+                <label for="sound">Sound:</label>
+                <select id="sound"></select>
+            </div>
         </div>
         
         <div class="button-container">
@@ -41,8 +80,11 @@
             <span id="round-display">Round: 0 / 0</span>
             <span id="time-display">Time: 0s</span>
         </div>
-        
 
+        <div class="footer">
+            <p><small>DISCLAIMER: For educational purposes only. Not medical treatment. Use at your own risk. No warranties or liability accepted. Consult a healthcare professional for psychological concerns.</small></p>
+        </div>
+  
     </div>
     
     <script src="script.js"></script>
