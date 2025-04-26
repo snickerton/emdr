@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function calculateAnimationDuration() {
         // Speed ranges from 1 (slowest) to 10 (fastest)
         // Convert to seconds for CSS animation
-        return lerp(1, 5, 1-parseInt(speedInput.value)/10);
+        return lerp(1.5, 5.5, 1-parseInt(speedInput.value)/10);
     }
 
     function lerp(start, end, amount) {
