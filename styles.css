@@ -1,0 +1,145 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.container {
+    width: 100%;
+    padding: 20px;
+    background: #f4f4f4;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.control-group {
+    margin-bottom: 10px;
+    flex: 1;
+    min-width: 200px;
+    padding: 0 10px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+#start-btn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#pause-btn {
+    background-color: #FFC107;
+    color: black;
+}
+
+#pause-btn.continue {
+    background-color: #2196F3;
+    color: white;
+}
+
+#reset-btn {
+    background-color: #F44336;
+    color: white;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.status {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    font-weight: bold;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.animation-container {
+    position: relative;
+    height: 50vh;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    margin-bottom: 20px;
+    overflow: hidden;
+    background-color: transparent;
+}
+
+#circle {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-color: #4CAF50;
+    border-radius: 50%;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+}
+
+@keyframes bounce {
+    0% { left: calc(50% - 25px); }
+    25% { left: calc(100% - 50px); }
+    50% { left: calc(50% - 25px); }
+    75% { left: 0; }
+    100% { left: calc(50% - 25px); }
+}
