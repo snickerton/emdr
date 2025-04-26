@@ -7,12 +7,22 @@ document.addEventListener('DOMContentLoaded', function() {
     const durationInput = document.getElementById('duration');
     const roundsInput = document.getElementById('rounds');
     const speedInput = document.getElementById('speed');
+    const soundSelect = document.getElementById('sound');
     const roundDisplay = document.getElementById('round-display');
     const timeDisplay = document.getElementById('time-display');
     const animationContainer = document.querySelector('.animation-container');
     
-    // Audio element
-    const tickSound = new Audio('sounds/tick.wav');
+    // Web Audio API for stereo sound
+    let audioContext;
+    try {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    } catch (e) {
+        console.error("Web Audio API is not supported in this browser");
+    }
+    let soundFile = 'tick.wav';
+    let audioBuffer = null;
+    let sourceNode = null;
+    let pannerNode = null;
     
     // State variables
     let isRunning = false;
@@ -25,6 +35,9 @@ document.addEventListener('DOMContentLoaded', function() {
     let timer;
     let animationInterval;
     let lastPosition = 'left';
+    
+    // Load available sounds
+    loadSounds();
     
     // Initialize
     function init() {
@@ -104,16 +117,129 @@ document.addEventListener('DOMContentLoaded', function() {
         function scheduleSound(position, delay) {
             setTimeout(() => {
                 if (!isRunning) return;
-                playSound();
+                playSound(position); // Pass position to control stereo panning
                 lastPosition = position;
             }, delay);
         }
     }
     
-    // Play the sound
-    function playSound() {
-        tickSound.currentTime = 0;
-        tickSound.play().catch(e => console.log("Audio play failed:", e));
+    // Play the sound with stereo panning (left/right)
+    function playSound(position = 'center') {
+        try {
+            if (!audioContext) return;
+            
+            // Resume audioContext if it's suspended (needed for browser autoplay policies)
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+            
+            if (!audioBuffer) return;
+            
+            // Create new source and panner nodes for each sound
+            sourceNode = audioContext.createBufferSource();
+            sourceNode.buffer = audioBuffer;
+            
+            // Create stereo panner
+            pannerNode = audioContext.createStereoPanner();
+            
+            // Set the pan based on the position
+            // -1 = fully left, 0 = center, 1 = fully right
+            if (position === 'left') {
+                pannerNode.pan.value = -1;
+            } else if (position === 'right') {
+                pannerNode.pan.value = 1;
+            } else {
+                pannerNode.pan.value = 0;
+            }
+            
+            // Connect nodes and play
+            sourceNode.connect(pannerNode);
+            pannerNode.connect(audioContext.destination);
+            sourceNode.start();
+        } catch (e) {
+            console.log("Audio play failed:", e);
+        }
+    }
+    
+    // Load an audio file into buffer
+    function loadAudioFile(url) {
+        if (!audioContext) return;
+        
+        // On a live server, we can use fetch which is cleaner
+        fetch(url)
+            .then(response => response.arrayBuffer())
+            .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+            .then(buffer => {
+                audioBuffer = buffer;
+            })
+            .catch(error => {
+                console.error('Error loading audio:', error);
+                // Create a fallback empty buffer in case of error
+                const emptyBuffer = audioContext.createBuffer(2, 44100, 44100);
+                audioBuffer = emptyBuffer;
+            });
+    }
+    
+    // Load available sounds from the sounds directory
+    function loadSounds() {
+        // Try to fetch the list of files from the sounds directory
+        fetch('sounds/')
+            .then(response => response.text())
+            .then(html => {
+                // Parse HTML response to extract sound files
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const links = doc.querySelectorAll('a');
+                
+                // Filter for sound files
+                const soundFiles = Array.from(links)
+                    .map(link => link.href)
+                    .filter(href => href.match(/\.(wav|mp3|ogg)$/))
+                    .map(href => href.split('/').pop());
+                
+                // If no sounds found through HTML parsing, use default list
+                if (soundFiles.length === 0) {
+                    // Fallback sound list
+                    const fallbackSounds = ['tick.wav', 'ping.wav', 'bing.wav'];
+                    populateSoundDropdown(fallbackSounds);
+                } else {
+                    populateSoundDropdown(soundFiles);
+                }
+            })
+            .catch(error => {
+                console.error('Error loading sounds:', error);
+                // Fallback sound list on error
+                const fallbackSounds = ['tick.wav', 'ping.wav', 'bing.wav'];
+                populateSoundDropdown(fallbackSounds);
+            });
+    }
+    
+    // Populate the sound dropdown with available sounds
+    function populateSoundDropdown(soundFiles) {
+        // Clear existing options
+        soundSelect.innerHTML = '';
+        
+        // Add options for each sound file
+        soundFiles.forEach(file => {
+            const option = document.createElement('option');
+            option.value = file;
+            // Format the name: remove extension and capitalize
+            const name = file.split('.')[0];
+            option.textContent = name.charAt(0).toUpperCase() + name.slice(1);
+            soundSelect.appendChild(option);
+        });
+        
+        // Set initial selection
+        if (soundSelect.options.length > 0) {
+            soundFile = soundSelect.value;
+            loadAudioFile(`sounds/${soundFile}`);
+        }
+        
+        // Add event listener for sound change
+        soundSelect.addEventListener('change', function() {
+            soundFile = this.value;
+            loadAudioFile(`sounds/${soundFile}`);
+        });
     }
     
     // Set circle position to center
@@ -281,11 +407,43 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Create placeholder for WAV file
-    fetch('sounds/tick.wav')
-        .catch(() => {
-            console.log('Warning: tick.wav not found. Please add a sound file.');
-        });
+    // Add keyboard event listener for spacebar control
+    document.addEventListener('keydown', function(event) {
+        // Check if spacebar was pressed
+        if (event.code === 'Space' || event.keyCode === 32) {
+            // Prevent default spacebar behavior (like scrolling)
+            event.preventDefault();
+            
+            // If start button is enabled, click it
+            if (!startBtn.disabled) {
+                startBtn.click();
+                
+                // Also resume audio context if suspended (browser autoplay policy)
+                if (audioContext && audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
+            }
+            // Otherwise, if pause/continue button is enabled, click it
+            else if (!pauseBtn.disabled) {
+                pauseBtn.click();
+            }
+        }
+    });
+    
+    // Event handler for any user interaction to enable audio
+    function enableAudio() {
+        if (audioContext && audioContext.state === 'suspended') {
+            audioContext.resume();
+        }
+        document.removeEventListener('click', enableAudio);
+        document.removeEventListener('keydown', enableAudio);
+        document.removeEventListener('touchstart', enableAudio);
+    }
+    
+    // Add event listeners to enable audio context on user interaction
+    document.addEventListener('click', enableAudio);
+    document.addEventListener('keydown', enableAudio);
+    document.addEventListener('touchstart', enableAudio);
     
     // Initialize on load
     init();
