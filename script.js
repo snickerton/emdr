@@ -11,6 +11,26 @@ document.addEventListener('DOMContentLoaded', function() {
     const roundDisplay = document.getElementById('round-display');
     const timeDisplay = document.getElementById('time-display');
     const animationContainer = document.querySelector('.animation-container');
+    const disclaimerModal = document.getElementById('disclaimer-modal');
+    const acceptDisclaimerBtn = document.getElementById('accept-disclaimer');
+    
+    // Check if user has already accepted the disclaimer
+    const hasAcceptedDisclaimer = localStorage.getItem('emdrDisclaimerAccepted');
+    
+    // Hide main content until disclaimer is accepted
+    const container = document.querySelector('.container');
+    if (!hasAcceptedDisclaimer) {
+        container.style.display = 'none';
+    } else {
+        disclaimerModal.style.display = 'none';
+    }
+    
+    // Handle disclaimer acceptance
+    acceptDisclaimerBtn.addEventListener('click', function() {
+        localStorage.setItem('emdrDisclaimerAccepted', 'true');
+        disclaimerModal.style.display = 'none';
+        container.style.display = 'block';
+    });
     
     // Web Audio API for stereo sound
     let audioContext;
@@ -226,10 +246,14 @@ document.addEventListener('DOMContentLoaded', function() {
             // Format the name: remove extension and capitalize
             const name = file.split('.')[0];
             option.textContent = name.charAt(0).toUpperCase() + name.slice(1);
+            // Set tick.wav as the default selected option
+            if (file.toLowerCase() === 'tick.wav') {
+                option.selected = true;
+            }
             soundSelect.appendChild(option);
         });
         
-        // Set initial selection
+        // Set initial selection (either tick.wav or first option)
         if (soundSelect.options.length > 0) {
             soundFile = soundSelect.value;
             loadAudioFile(`sounds/${soundFile}`);
