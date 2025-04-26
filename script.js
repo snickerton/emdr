@@ -220,7 +220,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // If no sounds found through HTML parsing, use default list
                 if (soundFiles.length === 0) {
                     // Fallback sound list
-                    const fallbackSounds = ['tick.wav', 'ping.wav', 'bing.wav'];
+                    const fallbackSounds = ['tick.wav', 'ping.wav', 'bing.wav', 'bloop_beep.wav', 'elevator_ding.wav'];
                     populateSoundDropdown(fallbackSounds);
                 } else {
                     populateSoundDropdown(soundFiles);
@@ -229,7 +229,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => {
                 console.error('Error loading sounds:', error);
                 // Fallback sound list on error
-                const fallbackSounds = ['tick.wav', 'ping.wav', 'bing.wav'];
+                const fallbackSounds = ['tick.wav', 'ping.wav', 'bing.wav', 'bloop_beep.wav', 'elevator_ding.wav'];
                 populateSoundDropdown(fallbackSounds);
             });
     }
