@@ -10,7 +10,7 @@ Published on [https://snickerton.github.io/emdr](https://snickerton.github.io/em
 
 The bilateral stimulation is thought to facilitate the processing of traumatic memories, helping the brain to store them differently and reduce their emotional impact. EMDR has been recognized as an effective treatment for Post-Traumatic Stress Disorder (PTSD) by many organizations including the American Psychological Association and the World Health Organization.
 
-## Full Legal Disclaimer
+## Important Disclaimer
 This website provides bilateral stimulation tools for educational purposes only, not as medical or psychological treatment. Use at your own risk. Site owners make no warranties and accept no liability for any damages resulting from use of this website or its content. If experiencing psychological distress, please consult a qualified healthcare professional.
 
 ## Features
