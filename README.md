@@ -4,7 +4,7 @@ A simple, elegant site that provides bilateral visual and auditory stimulation f
 
 Published on [https://snickerton.github.io/emdr](https://snickerton.github.io/emdr) via GitHub Pages.
 
-##TODO
+## TODO
 - Add volume
 - Change size and speed sliders to discrete number scale (or just add number input)
   
