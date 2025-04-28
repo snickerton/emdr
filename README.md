@@ -7,6 +7,7 @@ Published on [https://snickerton.github.io/emdr](https://snickerton.github.io/em
 ## TODO
 - Add volume
 - Change size and speed sliders to discrete number scale (or just add number input)
+- Save size, speed, duration, and all other settings as part of cookies
   
 ## What is EMDR?
 
