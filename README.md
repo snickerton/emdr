@@ -4,6 +4,10 @@ A simple, elegant site that provides bilateral visual and auditory stimulation f
 
 Published on [https://snickerton.github.io/emdr](https://snickerton.github.io/emdr) via GitHub Pages.
 
+##TODO
+- Add volume
+- Change size and speed sliders to discrete number scale (or just add number input)
+  
 ## What is EMDR?
 
 [Eye Movement Desensitization and Reprocessing (EMDR)](https://en.wikipedia.org/wiki/Eye_movement_desensitization_and_reprocessing) is a psychotherapy treatment designed to alleviate the distress associated with traumatic memories. Developed by Francine Shapiro in the late 1980s, EMDR therapy involves the use of bilateral stimulation (visual, auditory, and/or tactile) while the client focuses on traumatic memories.
